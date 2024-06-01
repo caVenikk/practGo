@@ -42,11 +42,20 @@ func main() {
 		notes := r.FormValue("notes")
 		borrowerId := r.FormValue("borrower_id")
 
-		sQuery := "INSERT INTO individuals (first_name, last_name, patronymic, passport, tin, snils, driver_license, additional_documents, notes, borrower_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
- 
+		sQuery := ""
+		var rows *sql.Rows
+		var err error
+
+		if (borrowerId == "") {
+			sQuery = "INSERT INTO individuals (first_name, last_name, patronymic, passport, tin, snils, driver_license, additional_documents, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+			rows, err = db.Query(sQuery, firstName, lastName, patronymic, passport, tin, snils, driverLicense, additionalDocuments, notes)
+		} else {
+			sQuery = "INSERT INTO individuals (first_name, last_name, patronymic, passport, tin, snils, driver_license, additional_documents, notes, borrower_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+			rows, err = db.Query(sQuery, firstName, lastName, patronymic, passport, tin, snils, driverLicense, additionalDocuments, notes, borrowerId)
+		}
+
 		fmt.Println(sQuery)
  
-		rows, err := db.Query(sQuery, firstName, lastName, patronymic, passport, tin, snils, driverLicense, additionalDocuments, notes, borrowerId)
 		if err != nil {
 			panic(err)
 		}		
