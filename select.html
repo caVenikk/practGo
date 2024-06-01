@@ -97,38 +97,36 @@
     <form method="POST" action="postform">
         <div class="inputs">
             <div class="input">
-                <label>Имя:</label> <input type="text" name="first_name" value="" placeholder="Введите имя" />
-            </div>
-            <div class="input">
-                <label>Фамилия:</label> <input type="text" name="last_name" value="" placeholder="Введите фамилию" />
-            </div>
-            <div class="input">
-                <label>Отчество:</label> <input type="text" name="patronymic" value="" placeholder="Введите отчество" />
-            </div>
-            <div class="input">
-                <label>Паспорт:</label> <input type="text" name="passport" value="" placeholder="Введите паспорт" />
-            </div>
-            <div class="input">
-                <label>ИНН:</label> <input type="text" name="tin" value="" placeholder="Введите ИНН" />
-            </div>
-            <div class="input">
-                <label>СНИЛС:</label> <input type="text" name="snils" value="" placeholder="Введите СНИЛС" />
-            </div>
-            <div class="input">
-                <label>Водительское удостоверение:</label> <input type="text" name="driver_license" value=""
-                    placeholder="Введите водительское удостоверение" />
-            </div>
-            <div class="input">
-                <label>Дополнительные документы:</label> <input type="text" name="additional_documents" value=""
-                    placeholder="Введите дополнительные документы" />
-            </div>
-            <div class="input">
-                <label>Примечания:</label> <input type="text" name="notes" value="" placeholder="Введите заметки" />
-            </div>
-            <div class="input">
-                <label>Заемщик (ID):</label> <input type="number" name="borrower_id" value="" placeholder="Введите ID заемщика" />
+                <label>Тип:</label> 
+                <select name="type">
+                    <option value="planet">Планета</option>
+                    <option value="star">Звезда</option>
+                    <option value="satellite">Спутник</option>
+                    <option value="asteroid">Астероид</option>
+                    <option value="comet">Комета</option>
+                    <option value="meteorite">Метеорит</option>
+                </select>
             </div>
 
+            <div class="input">
+                <label>Точность:</label> <input type="number" name="accuracy" value="" placeholder="Введите точность" />
+            </div>
+
+            <div class="input">
+                <label>Количество:</label> <input type="number" name="quantity" value="" placeholder="Введите количество" />
+            </div>
+
+            <div class="input">
+                <label>Время:</label> <input type="time" name="time" value="" placeholder="Введите время" />
+            </div>
+
+            <div class="input">
+                <label>Дата:</label> <input type="date" name="date" value="" placeholder="Введите дату" />
+            </div>
+
+            <div class="input">
+                <label>Примечание:</label> <textarea name="notes" value="" placeholder="Введите примечание"></textarea>
+            </div>
         </div>
         <input type="submit" value="Добавить" />
     </form>

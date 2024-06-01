@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-    db, err := sql.Open("mysql", "nikita:5463@/bank")
+    db, err := sql.Open("mysql", "nikita:5463@/observatory")
      
     if err != nil {
         panic(err)
@@ -30,31 +30,19 @@ func main() {
 
 	// сохранение отправленных значений через поля формы.
 	http.HandleFunc("/postform", func(w http.ResponseWriter, r *http.Request){
-     
-        firstName := r.FormValue("first_name")
-		lastName := r.FormValue("last_name")
-		patronymic := r.FormValue("patronymic")
-		passport := r.FormValue("passport")
-		tin := r.FormValue("tin")
-		snils := r.FormValue("snils")
-		driverLicense := r.FormValue("driver_license")
-		additionalDocuments := r.FormValue("additional_documents")
+
+		objType := r.FormValue("type")
+		accuracy := r.FormValue("accuracy")
+		quantity := r.FormValue("quantity")
+		time := r.FormValue("time")
+		date := r.FormValue("date")
 		notes := r.FormValue("notes")
-		borrowerId := r.FormValue("borrower_id")
 
-		sQuery := ""
-		var rows *sql.Rows
-		var err error
-
-		if (borrowerId == "") {
-			sQuery = "INSERT INTO individuals (first_name, last_name, patronymic, passport, tin, snils, driver_license, additional_documents, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-			rows, err = db.Query(sQuery, firstName, lastName, patronymic, passport, tin, snils, driverLicense, additionalDocuments, notes)
-		} else {
-			sQuery = "INSERT INTO individuals (first_name, last_name, patronymic, passport, tin, snils, driver_license, additional_documents, notes, borrower_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-			rows, err = db.Query(sQuery, firstName, lastName, patronymic, passport, tin, snils, driverLicense, additionalDocuments, notes, borrowerId)
-		}
+		sQuery := "INSERT INTO objects (type, accuracy, quantity, time, date, notes) VALUES (?, ?, ?, ?, ?, ?)"
 
 		fmt.Println(sQuery)
+
+		rows, err := db.Query(sQuery, objType, accuracy, quantity, time, date, notes)
  
 		if err != nil {
 			panic(err)
@@ -82,7 +70,7 @@ func viewHeadQuery(w http.ResponseWriter, db *sql.DB, sShow string) {
     defer rows.Close()
 
 	fmt.Fprintf(w, "<tr>")
-     for i := 0; i < 11; i++ {
+     for i := 0; i < 7; i++ {
 		rows.Next()
         p := sHead{}
         err := rows.Scan(&p.clnme)
@@ -95,22 +83,31 @@ func viewHeadQuery(w http.ResponseWriter, db *sql.DB, sShow string) {
 	fmt.Fprintf(w, "</tr>")
 }
 
+func mapObjectType(objType string) string {	
+	var objTypeMap = map[string]string{
+		"planet": "Планета",
+		"star": "Звезда",
+		"satellite": "Спутник",
+		"asteroid": "Астероид",
+		"comet": "Комета",
+		"meteorite": "Метеорит",
+	}
+
+	return objTypeMap[objType]
+}
+
 // отправка в браузер строк из таблицы.
 func viewSelectQuery(w http.ResponseWriter, db *sql.DB, sSelect string) {
-	type individual struct {
+	type object struct {
 		id int
-		firstName string
-		lastName string
-		patronymic string
-		passport string
-		tin string
-		snils string
-		driverLicense string
-		additionalDocuments string
+		objType string
+		accuracy string
+		quantity string
+		time string
+		date string
 		notes string
-		borrowerId sql.NullInt64
 	}
-	individuals := []individual{}
+	objects := []object{}
 
 	// получение значений в массив tests из струкрур типа test.
     rows, err := db.Query(sSelect)
@@ -120,18 +117,18 @@ func viewSelectQuery(w http.ResponseWriter, db *sql.DB, sSelect string) {
     defer rows.Close()
      
     for rows.Next() {
-        p := individual{}
-        err := rows.Scan(&p.id, &p.firstName, &p.lastName, &p.patronymic, &p.passport, &p.tin, &p.snils, &p.driverLicense, &p.additionalDocuments, &p.notes, &p.borrowerId)
+        p := object{}
+        err := rows.Scan(&p.id, &p.objType, &p.accuracy, &p.quantity, &p.time, &p.date, &p.notes)
         if err != nil{
             fmt.Println(err)
             continue
         }
-        individuals = append(individuals, p)
+        objects = append(objects, p)
     }
 	
 	// перебор массива из БД.
-	for _, p := range individuals {
-		fmt.Fprintf(w, "<tr><td>"+strconv.Itoa(p.id)+"</td><td>"+p.firstName+"</td><td>"+p.lastName+"</td><td>"+p.patronymic+"</td><td>"+p.passport+"</td><td>"+p.tin+"</td><td>"+p.snils+"</td><td>"+p.driverLicense+"</td><td>"+p.additionalDocuments+"</td><td>"+p.notes+"</td><td>"+strconv.FormatInt(p.borrowerId.Int64, 10)+"</td></tr>")
+	for _, p := range objects {
+		fmt.Fprintf(w, "<tr><td>"+strconv.Itoa(p.id)+"</td><td>"+mapObjectType(p.objType)+"</td><td>"+p.accuracy+"</td><td>"+p.quantity+"</td><td>"+p.time+"</td><td>"+p.date+"</td><td>"+p.notes+"</td></tr>")
 	}
 }
 	
@@ -173,8 +170,8 @@ func viewSelect(w http.ResponseWriter, db *sql.DB) {
 			fmt.Fprintf(w, scanner.Text())
 		}
 		if scanner.Text() == "@tr" {
-			viewHeadQuery(w, db, "select COLUMN_NAME AS clnme from information_schema.COLUMNS where TABLE_NAME='individuals' ORDER BY ORDINAL_POSITION")
-			viewSelectQuery(w, db, "SELECT * FROM individuals ORDER BY id ASC")
+			viewHeadQuery(w, db, "select COLUMN_NAME AS clnme from information_schema.COLUMNS where TABLE_NAME='objects' ORDER BY ORDINAL_POSITION")
+			viewSelectQuery(w, db, "CALL select_objects()")
 		}
 		if scanner.Text() == "@ver" {
 			viewSelectVerQuery(w, db, "SELECT VERSION() AS ver")
