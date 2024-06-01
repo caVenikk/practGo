@@ -1,87 +1,146 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Как можно работать с таблицами в MySQL на Go (Golang)</title>
-    </head>
-	<style>
-body {
-	font-family: sans-serif;
-	text-align: center;
-}
-table {
-	width: 90%%;
-	margin-left: auto;
-    margin-right: auto;
-    text-align: left;
-	border-collapse: collapse;
-	table-layout: fixed;
-}
-tr:nth-child(odd) { 
-	background-color: #C9E4F6; 
-}
-tr:nth-child(even) { 
-	background-color: #B4DAF2; 
-}
-tr:first-child { 
-	background-color: #00add9;
-	font-weight: bold;
-}
-tr {
-	opacity: 0.77;
-}
-tr:nth-child(n+2):hover {
-	color: #fff;
-	cursor: pointer;
-	font-weight: bold;
-	background-color: #bfdcee;
-}
-td {
-	padding: 5px;
-    position: relative;
-    border: 1px solid #333;
-    height: 20px;
-}
-td:first-child {
-	width: 35px;
-	text-align: center;
-}
-h1, h1 a:visited {
-	color: #00add9;
-    background-color: #fff;
-	font-size: 30px;
-	font-family: Roboto, Geneva, Arial, Helvetica, sans-serif;
-}
-h1 a:hover {
-	color: #33bee1;
-}
-a {
-	text-decoration: none;
-}
-label {
-	font-size: 16px;
-	text-decoration: underline;
-}
-input[type="submit"] {
-	cursor: pointer;
-}
-	</style>
-    <body>
-        <h1><a href=".">Как можно работать с таблицами в MySQL на GO (Golang)</a></h1>
-        <form method="POST" action="postform">
-            <label>Параметр 1:</label> <input type="text" name="col1" value="Первая" />
-            <label>Параметр 2:</label> <input type="text" name="col2" value="Вторая ячейка" />
-            <label>Параметр 3:</label> <input type="text" name="col3" value="Третья ..." />
-            <input type="submit" value="Добавить" />
-        </form>
-		<br />
-		<table>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Как можно работать с таблицами в MySQL на Go (Golang)</title>
+</head>
+<style>
+    body {
+        font-family: sans-serif;
+        text-align: center;
+    }
+
+    table {
+        margin: 0 auto;
+        text-align: left;
+        border-collapse: collapse;
+        table-layout: fixed;
+    }
+
+    tr:nth-child(odd) {
+        background-color: #C9E4F6;
+    }
+
+    tr:nth-child(even) {
+        background-color: #B4DAF2;
+    }
+
+    tr:first-child {
+        background-color: #00add9;
+        font-weight: bold;
+    }
+
+    tr {
+        opacity: 0.77;
+    }
+
+    tr:nth-child(n+2):hover {
+        color: #fff;
+        cursor: pointer;
+        font-weight: bold;
+        background-color: #bfdcee;
+    }
+
+    td {
+        padding: 5px;
+        position: relative;
+        border: 1px solid #333;
+        height: 20px;
+    }
+
+    td:first-child {
+        width: 35px;
+        text-align: center;
+    }
+
+    h1,
+    h1 a:visited {
+        color: #00add9;
+        background-color: #fff;
+        font-size: 30px;
+        font-family: Roboto, Geneva, Arial, Helvetica, sans-serif;
+    }
+
+    h1 a:hover {
+        color: #33bee1;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    label {
+        font-size: 16px;
+        text-decoration: underline;
+    }
+
+    input[type="submit"] {
+        cursor: pointer;
+    }
+
+    .inputs {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .input {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        margin-bottom: 10px;
+    }
+</style>
+
+<body>
+    <h1><a href=".">Как можно работать с таблицами в MySQL на GO (Golang)</a></h1>
+    <form method="POST" action="postform">
+        <div class="inputs">
+            <div class="input">
+                <label>Имя:</label> <input type="text" name="first_name" value="" placeholder="Введите имя" />
+            </div>
+            <div class="input">
+                <label>Фамилия:</label> <input type="text" name="last_name" value="" placeholder="Введите фамилию" />
+            </div>
+            <div class="input">
+                <label>Отчество:</label> <input type="text" name="patronymic" value="" placeholder="Введите отчество" />
+            </div>
+            <div class="input">
+                <label>Паспорт:</label> <input type="text" name="passport" value="" placeholder="Введите паспорт" />
+            </div>
+            <div class="input">
+                <label>ИНН:</label> <input type="text" name="tin" value="" placeholder="Введите ИНН" />
+            </div>
+            <div class="input">
+                <label>СНИЛС:</label> <input type="text" name="snils" value="" placeholder="Введите СНИЛС" />
+            </div>
+            <div class="input">
+                <label>Водительское удостоверение:</label> <input type="text" name="driver_license" value=""
+                    placeholder="Введите водительское удостоверение" />
+            </div>
+            <div class="input">
+                <label>Дополнительные документы:</label> <input type="text" name="additional_documents" value=""
+                    placeholder="Введите дополнительные документы" />
+            </div>
+            <div class="input">
+                <label>Примечания:</label> <input type="text" name="notes" value="" placeholder="Введите заметки" />
+            </div>
+            <div class="input">
+                <label>Заемщик (ID):</label> <input type="number" name="borrower_id" value="" placeholder="Введите ID заемщика" />
+            </div>
+
+        </div>
+        <input type="submit" value="Добавить" />
+    </form>
+    <br />
+    <table>
 @tr
-		</table>
-		<p>Версия базы данных: 
-			<b>
+    </table>
+    <p>Версия базы данных:
+        <b>
 @ver
-			</b>
-		</p>
-    </body>
+        </b>
+    </p>
+</body>
+
 </html>
